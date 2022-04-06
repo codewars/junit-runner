@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          # https://adoptium.net
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - name: Build
+        run: ./gradlew shadowJar --no-daemon
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/codewars-junit-runner.jar
+          fail_on_unmatched_files: true
+          token: ${{ secrets.GITHUB_TOKEN }}
