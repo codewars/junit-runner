@@ -180,7 +180,6 @@ public class CodewarsListener implements TestExecutionListener {
       System.out.printf("\n<ERROR::>%s\n", formattedMessage);
       System.out.printf("\n<LOG:ESC:Stack Trace>%s\n", formattedStackTrace);
     }
-
   }
 
   // Read the stacktrace of the supplied {@link Throwable} into a String.
