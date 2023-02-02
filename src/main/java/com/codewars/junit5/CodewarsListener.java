@@ -171,14 +171,12 @@ public class CodewarsListener implements TestExecutionListener {
 
   private static void outputError(String kind, Throwable throwable) {
     String msg = throwable.getMessage();
+    String formattedStackTrace = formatMessage(readStackTrace(throwable));
     if (msg == null) {
-      System.out.printf("\n<ERROR::>Test %s\n", kind);
-      System.out.printf("\n<LOG:ESC:-Stack Trace>%s\n", formatMessage(readStackTrace(throwable)));
+      System.out.printf("\n<ERROR::>Test %s<:LF:><:LF:>%s\n", kind, formattedStackTrace);
     } else {
       String formattedMessage = formatMessage(msg);
-      String formattedStackTrace = formatMessage(readStackTrace(throwable));
-      System.out.printf("\n<ERROR::>%s\n", formattedMessage);
-      System.out.printf("\n<LOG:ESC:Stack Trace>%s\n", formattedStackTrace);
+      System.out.printf("\n<ERROR::>%s<:LF:><:LF:>%s\n", formattedMessage, formattedStackTrace);
     }
   }
 
