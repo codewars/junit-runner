@@ -122,6 +122,14 @@ public class CodewarsListener implements TestExecutionListener {
           } else {
             System.out.println("\n<FAILED::>Failed for unknown cause");
           }
+        } else {
+          ++failures;
+          Optional<Throwable> th = testExecutionResult.getThrowable();
+          if (th.isPresent()) {
+            outputError("Crashed", th.get());
+          } else {
+            System.out.println("\n<ERROR::>Unexpected error occurred");
+          }
         }
         System.out.printf("\n<COMPLETEDIN::>%d\n", getDuration(testIdentifier));
         break;
@@ -161,6 +169,17 @@ public class CodewarsListener implements TestExecutionListener {
     System.out.printf("\n<LOG:ESC:-Stack Trace>%s\n", formatMessage(readStackTrace(throwable)));
   }
 
+  private static void outputError(String kind, Throwable throwable) {
+    String msg = throwable.getMessage();
+    String formattedStackTrace = formatMessage(readStackTrace(throwable));
+    if (msg == null) {
+      System.out.printf("\n<ERROR::>Test %s<:LF:><:LF:>%s\n", kind, formattedStackTrace);
+    } else {
+      String formattedMessage = formatMessage(msg);
+      System.out.printf("\n<ERROR::>%s<:LF:><:LF:>%s\n", formattedMessage, formattedStackTrace);
+    }
+  }
+
   // Read the stacktrace of the supplied {@link Throwable} into a String.
   // https://github.com/junit-team/junit5/blob/946c5980074f466de0688297a6d661d32679599a/junit-platform-commons/src/main/java/org/junit/platform/commons/util/ExceptionUtils.java#L76
   private static String readStackTrace(Throwable throwable) {
@@ -186,7 +205,7 @@ public class CodewarsListener implements TestExecutionListener {
   }
 
   private static String formatMessage(final String s) {
-    return (s == null) ? "" : s.replaceAll("\n", "<:LF:>");
+    return (s == null) ? "" : s.replaceAll(System.lineSeparator(), "<:LF:>");
   }
 
   private NavigableSet<String> reportEntries(TestIdentifier testIdentifier) {
